@@ -1,0 +1,16 @@
+markdown: rdiscount
+permalink: /:title/
+url: http://tom165.net
+name: tom165.NET
+author: tom165
+qq: 171522930
+email: tom165@gmail.com
+duoshuo: tom165
+beian: 
+cnzz: 4280553
+weibo: 1187789077
+github: tom165
+pygments: true
+safe: true
+paginate: 20
+about: "这里是 tom165 的个人博客，创建于 2009 年。2009-2011使用了 歪酷（http://ycool.com/user/tom165） 博客程序；2011-2013 年更换为 WordPress（http://tom165.wordpress.com/）；2013年9月迁移到 Jekyll @ GitHub。<br /><br />这里包含了部分个人的“折腾”过程、结论和成果，切换到分类模可以更快地找到感兴趣的内容，欢迎观赏、建议、拍砖……"
