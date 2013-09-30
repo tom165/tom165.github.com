@@ -1,0 +1,139 @@
+---
+author: tom165
+comments: true
+date: 2011-04-19 02:54:51+00:00
+layout: post
+slug: '%e5%88%a9%e7%94%a8securecrt%e7%9a%84%e8%84%9a%e6%9c%ac%e5%8a%9f%e8%83%bd%e8%87%aa%e5%8a%a8%e5%ae%9a%e6%97%b6%e6%89%a7%e8%a1%8c%e4%bb%bb%e5%8a%a1'
+title: 利用SecureCRT的脚本功能自动定时执行任务
+wordpress_id: 55
+categories:
+- 编程技术
+- 网络技术
+tags:
+- 脚本 自动 执行 定时 securecrt
+---
+
+SecureCRT是一款仿真终端工具，常用来telnet到路由器或交换机上，它还支持VBscript和Jscript脚本。下边讲述一种在WINDOWS下利用SecureCRT的脚本功能自动定时执行一些登录到路由器或交换机来执行的任务：1.写好要SecureCRT执行的脚本，可登录执行任何操作。如se800.vbs,保存在d:\se800下。内容附在最后。<!-- more -->
+
+2.写好启动SecureCRT执行脚本的批处理文件。如add_cmd.bat，保存在d:\se800下
+内容如下：
+d:
+cd \se800
+"C:\Program Files\SecureCRT\SecureCRT.EXE"    /T /SCRIPT se800.vbs
+
+3.在WINDOWS的控制面板的任务计划里增加任务，如在23：30执行add_cmd.bat,大功告成。
+
+====================
+se800.vbs的内容：
+====================
+
+# $language = "VBScript"
+# $interface = "1.0"
+
+Function my_Date()
+dim     y,m,d,h,mm
+Dim    nowDate,mytime
+nowDate=Now()
+mytime=time()
+y=Year(nowDate)
+m=Month(nowDate)
+d=Day(nowDate)
+h=hour(mytime)
+mm=minute(mytime)
+my_Date=y & "-" & m & "-" & d
+
+End Function
+
+Sub main
+
+Dim fso, fHost,fCMDbsn,fCMDscs, strLineHost,strLineCommand,strLogfile,strArray
+
+Const ForReading = 1
+Const Hostip=0
+Const user=1
+Const password=2
+Const superpwd=3
+Const hostname=0
+Const NodeType=4
+
+Const my_user="jhxsy"
+Const my_pass="2381654"
+
+Const ScriptPath="D:\se800\"
+Const LogPath="D:\se800\log\"
+
+Set fso = CreateObject("Scripting.FileSystemObject")
+Set fHost = fso.OpenTextFile(ScriptPath& "ip.txt", ForReading, 0)  '
+
+Do While fHost.AtEndOfStream <> True
+crt.Screen.Synchronous = True
+strLineHost = Trim(fHost.Readline ) '获取fhost文件中的一行,如192.168.0.9    null    password    en_pwd    BAS
+strArray=split(strLineHost,vbtab,-1) '按tab将获取的行分割成一个数组strArray[0]=192.168.0.9   ....  strArray[4]=BAS
+strLogfile=LogPath & strArray(hostname)& "-" & my_date() &".txt"
+crt.Session.LogFileName = strLogfile
+
+crt.Session.Log True
+
+crt.Session.Connect "/telnet" & " " & strArray(Hostip) & vbcr  'telnet strArray[0] vbcr=回车
+
+crt.screen.waitforstring "login:"
+crt.screen.send my_user & vbcr             'strArray(user) & vbcr
+
+crt.screen.waitforstring "assword:"
+crt.screen.send my_pass  & vbcr
+
+If strArray(NodeType)="BAS" Then
+Set fCMDbsn=fso.OpenTextFile(ScriptPath& "cmd.txt", ForReading, 0)    '如果是bas 打开cmd.txt文件 并按forreading方式读取
+Do While fCMDbsn.AtEndOfStream <> True '如果没结束
+strLineCommand=Trim(fCMDbsn.Readline)'获取读取的行
+Do While strLineCommand="wait"'?不解
+crt.sleep 5000
+strLineCommand=Trim(fCMDbsn.Readline)
+Loop
+crt.Screen.WaitforString "#"'等待出现超级权限的提示
+crt.Screen.Send strLineCommand & vbcr'发送命令
+Call CheckEnd()
+Loop
+Set fCMDbsn=nothing
+Else
+Set fCMDscs=fso.OpenTextFile(ScriptPath& "cmdscs.txt", ForReading, 0)
+Do While fCMDscs.AtEndOfStream <> True
+strLineCommand=Trim(fCMDscs.Readline)
+crt.Screen.WaitforString ">"
+crt.Screen.Send strLineCommand & vbcr
+crt.Screen.Send "y" & vbcr
+Loop
+Set fCMDscs=nothing
+End If
+'Logout node
+crt.screen.waitforstring "#"
+'crt.Session.Log False
+crt.screen.send " exit" & vbcr
+
+'Stop log file action
+'crt.screen.waitforstring "$"
+'crt.screen.send vbcr
+crt.Session.Log False
+'crt.screen.send vbcr
+crt.Session.Disconnect
+
+crt.Screen.Synchronous = False
+Loop
+
+Set fso=nothing
+
+crt.quit
+
+End Sub
+
+Sub CheckEnd()
+Do Until crt.Screen.WaitForString ("#" , 1)=True
+crt.Screen.Send " "
+Loop
+crt.Screen.Send vbcr
+
+Exit Sub
+
+End Sub
+
+

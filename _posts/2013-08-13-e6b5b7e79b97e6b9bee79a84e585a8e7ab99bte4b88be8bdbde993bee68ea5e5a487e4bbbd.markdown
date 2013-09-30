@@ -1,0 +1,76 @@
+---
+author: tom165
+comments: true
+date: 2013-08-13 00:38:06+00:00
+layout: post
+slug: '%e6%b5%b7%e7%9b%97%e6%b9%be%e7%9a%84%e5%85%a8%e7%ab%99bt%e4%b8%8b%e8%bd%bd%e9%93%be%e6%8e%a5%e5%a4%87%e4%bb%bd'
+title: 海盗湾的全站BT下载链接备份
+wordpress_id: 156
+categories:
+- 网络技术
+tags:
+- 海盗湾
+---
+
+[![p8166052](http://tom165.files.wordpress.com/2013/08/p8166052.jpg?w=300)](http://tom165.files.wordpress.com/2013/08/p8166052.jpg)
+
+海盗湾（Pirate Bay）是全球最大的BT下载网站，以前它的BT下载链接都是用BT种子形式存放，现在它已抛弃.torrent形式改用磁力链接以降低服务器硬件需求和减少风险。
+
+对经常要用它来查找下载的人来说，最大的好处可以将海盗湾整个站点（160多万个磁力链接）备份下来只需要90MB，一个小型U盘可以绰绰有余的装下。
+
+该备份文件也已上传到海盗湾网站了，它的磁力链接为：
+magnet:?xt=urn:btih:938802790a385c49307f34cca4c30f80b03df59c&dn=The＋whole＋Pi
+rate＋Bay＋magnet＋archive&tr=udp％3A％2F％2Ftracker.openbittorrent.com％3A80&
+tr=udp％3A％2F％2Ftracker.publicbt.com％3A80&tr=udp％3A％2F％2Ftracker.ccc.de％
+3A80
+
+或用转换后的magnet:?xt=urn:btih:938802790a385c49307f34cca4c30f80b03df5
+9c
+链接抓取后的文档解压后有160多M，可以用Notepad++打开文档，格式类似于：
+ID|Name|Size in bytes|Seeders|Leechers|Magnet Link Hash
+需要在Magnet Link Hash前添加 magnet:?xt=urn:btih: 即可。
+
+[![p8166050](http://tom165.files.wordpress.com/2013/08/p8166050.jpg?w=300)](http://tom165.files.wordpress.com/2013/08/p8166050.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+如：
+
+
+
+
+
+
+
+6097467|The Rock 1996 720p BluRay DTS x264-HiDt BOZX|9438951970|1|3|b191f667a5
+8151ce696fe465033a902e5faef7b1
+字段之间用“|”分隔开
+6097467是种子在海盗湾的id
+The Rock 1996 720p BluRay DTS x264-HiDt BOZX是文件名
+9438951970是文件大小
+1和3分别是抓取数据的时候，该种子的做种数和下载数
+b191f667a58151ce696fe465033a902e5faef7b1是磁力连接的hash
+要用磁力链接的话，必须将链接补充完整，即在前面添加 magnet:?xt=urn:btih:
+如上面那个种子的下载链接：magnet:?xt=urn:btih:b191f667a58151ce696fe465033a902e
+5faef7b1
+然后打开相关下载软件，添加magnet链接就可下载了。
+
+参考：
+
+1：[http://www.ghacks.net/2012/02/09/you-can-now-download-the-pirate-bay-to-your-computer/](http://www.ghacks.net/2012/02/09/you-can-now-download-the-pirate-bay-to-your-computer/)
+
+2：链接抓取Perl源码：[http://pastebin.com/8RXXthXB](http://pastebin.com/8RXXthXB)
